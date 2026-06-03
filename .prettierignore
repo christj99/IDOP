@@ -1,0 +1,11 @@
+node_modules/
+dist/
+coverage/
+.expo/
+pnpm-lock.yaml
+AGENTS.md
+BACKLOG.md
+CODEX_GOAL.md
+HANDOFF_README.md
+Idop_Product_Bible_v0.2.md
+docs/**/*.md
