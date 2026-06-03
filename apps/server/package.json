@@ -1,0 +1,20 @@
+{
+  "name": "@idop/server",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "db:migrate": "echo \"No Prisma migrations exist until M2.\"",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit -p ../../tsconfig.json"
+  },
+  "dependencies": {
+    "fastify": "^5.3.3",
+    "zod": "^3.25.56"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.4"
+  }
+}
