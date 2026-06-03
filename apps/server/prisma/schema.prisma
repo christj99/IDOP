@@ -1,0 +1,142 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum CapsuleStatus {
+  active
+  home
+  retired
+}
+
+enum JourneyStatus {
+  travelling
+  returned
+}
+
+enum MemoryEventType {
+  scar
+  transform
+  stamp
+  cargo
+  trace
+  place_time
+  myth
+}
+
+model User {
+  id           String    @id @default(cuid())
+  handle       String?
+  ageBand      String?   @map("age_band")
+  regionCoarse String?   @map("region_coarse")
+  settings     Json      @default("{}")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  deletedAt    DateTime? @map("deleted_at")
+  capsules     Capsule[]
+  hearth       Hearth?
+
+  @@map("users")
+}
+
+model Capsule {
+  id            String        @id @default(cuid())
+  ownerId       String        @map("owner_id")
+  name          String
+  shell         String
+  core          String
+  cargo         String?
+  intentDefault String        @map("intent_default")
+  currentState  Json          @default("{}") @map("current_state")
+  status        CapsuleStatus @default(home)
+  createdAt     DateTime      @default(now()) @map("created_at")
+  owner         User          @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  journeys      Journey[]
+  memoryEvents  MemoryEvent[]
+  artifacts     Artifact[]
+
+  @@index([ownerId])
+  @@map("capsules")
+}
+
+model Hearth {
+  id               String    @id @default(cuid())
+  ownerId          String    @unique @map("owner_id")
+  stage            String
+  charge           Int       @default(0)
+  tendLastAt       DateTime? @map("tend_last_at")
+  unlockedFeatures Json      @default("[]") @map("unlocked_features")
+  appearanceState  Json      @default("{}") @map("appearance_state")
+  owner            User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  @@map("hearths")
+}
+
+model Journey {
+  id                      String        @id @default(cuid())
+  capsuleId               String        @map("capsule_id")
+  intentId                String        @map("intent_id")
+  launchTime              DateTime      @map("launch_time")
+  duration                Int
+  coarseRegionId          String        @map("coarse_region_id")
+  seedHash                String        @map("seed_hash")
+  secretVersion           String        @map("secret_version")
+  capsuleSnapshotAtLaunch Json          @map("capsule_snapshot_at_launch")
+  influenceEvents         Json          @default("[]") @map("influence_events")
+  status                  JourneyStatus @default(travelling)
+  startedAt               DateTime      @default(now()) @map("started_at")
+  capsule                 Capsule       @relation(fields: [capsuleId], references: [id], onDelete: Cascade)
+  memoryEvents            MemoryEvent[]
+
+  @@index([capsuleId])
+  @@index([coarseRegionId, launchTime])
+  @@map("journeys")
+}
+
+model MemoryEvent {
+  id             String          @id @default(cuid())
+  capsuleId      String          @map("capsule_id")
+  journeyId      String?         @map("journey_id")
+  type           MemoryEventType
+  timestamp      DateTime        @default(now())
+  coarseRegionId String?         @map("coarse_region_id")
+  payload        Json
+  causes         Json
+  source         String
+  createdAt      DateTime        @default(now()) @map("created_at")
+  capsule        Capsule         @relation(fields: [capsuleId], references: [id], onDelete: Cascade)
+  journey        Journey?        @relation(fields: [journeyId], references: [id], onDelete: SetNull)
+
+  @@index([capsuleId, timestamp])
+  @@index([journeyId, timestamp])
+  @@index([type])
+  @@map("memory_events")
+}
+
+model WorldSnapshot {
+  coarseRegionId String   @map("coarse_region_id")
+  timeWindow     DateTime @map("time_window")
+  canonical      Json
+  signals        Json
+  sourceVersion  String   @map("source_version")
+  confidence     Float?
+
+  @@id([coarseRegionId, timeWindow])
+  @@map("world_snapshots")
+}
+
+model Artifact {
+  id          String  @id @default(cuid())
+  capsuleId   String  @map("capsule_id")
+  summary     String
+  rarity      String
+  displayMeta Json    @default("{}") @map("display_meta")
+  capsule     Capsule @relation(fields: [capsuleId], references: [id], onDelete: Cascade)
+
+  @@index([capsuleId])
+  @@map("artifacts")
+}
+

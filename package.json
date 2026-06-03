@@ -17,7 +17,9 @@
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "format": "prettier --check .",
     "format:write": "prettier --write .",
-    "db:migrate": "pnpm --filter @idop/server db:migrate"
+    "db:generate": "pnpm --filter @idop/server db:generate",
+    "db:migrate": "pnpm --filter @idop/server db:migrate",
+    "db:validate": "pnpm --filter @idop/server db:validate"
   },
   "devDependencies": {
     "@eslint/js": "^9.28.0",
