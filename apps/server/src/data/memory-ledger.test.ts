@@ -12,6 +12,19 @@ import {
   type WorldSnapshotRecord,
 } from "./memory-ledger.js";
 
+const forbiddenWorldSnapshotKeys = [
+  "userId",
+  "ownerId",
+  "capsuleId",
+  "journeyId",
+  "lat",
+  "lng",
+  "latitude",
+  "longitude",
+] as const;
+
+// TODO(M6): validate WorldSnapshot.canonical and MemoryEvent.payload at the write boundary (Zod) to reject coordinate-shaped fields.
+
 const baseCapsule: CapsuleRecord = {
   id: "capsule-1",
   ownerId: "user-1",
@@ -227,7 +240,7 @@ describe("world snapshots", () => {
     const repo = createInMemoryIdopRepository({ worldSnapshots: [snapshot] });
 
     expect(repo.listWorldSnapshots()).toEqual([snapshot]);
-    for (const forbiddenKey of ["userId", "ownerId", "capsuleId", "journeyId"]) {
+    for (const forbiddenKey of forbiddenWorldSnapshotKeys) {
       expect(Object.hasOwn(snapshot, forbiddenKey)).toBe(false);
     }
   });
@@ -238,6 +251,8 @@ describe("world snapshots", () => {
 
     expect(worldSnapshotModel).toContain("coarseRegionId");
     expect(worldSnapshotModel).toContain("timeWindow");
-    expect(worldSnapshotModel).not.toMatch(/userId|ownerId|capsuleId|journeyId/);
+    expect(worldSnapshotModel).not.toMatch(
+      /userId|ownerId|capsuleId|journeyId|lat|lng|latitude|longitude/,
+    );
   });
 });
