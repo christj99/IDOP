@@ -1,0 +1,9 @@
+{
+  "expo": {
+    "name": "Idop",
+    "slug": "idop",
+    "version": "0.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic"
+  }
+}
