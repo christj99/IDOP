@@ -9,6 +9,22 @@ on:
 jobs:
   verify:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: idop
+          POSTGRES_PASSWORD: idop_password
+          POSTGRES_DB: idop
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U idop -d idop"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    env:
+      DATABASE_URL: postgresql://idop:idop_password@localhost:5432/idop?schema=public
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -25,6 +41,12 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Validate database schema
+        run: pnpm db:validate
+
+      - name: Apply database migrations
+        run: pnpm db:migrate
 
       - name: Lint
         run: pnpm lint
