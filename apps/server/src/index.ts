@@ -1,4 +1,4 @@
-import { resolve } from "node:path";
+import { resolve, win32 } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import Fastify, { type FastifyServerOptions } from "fastify";
@@ -34,7 +34,21 @@ export function isEntrypointModule(importMetaUrl: string, argvPath: string | und
     return false;
   }
 
-  return resolve(fileURLToPath(importMetaUrl)) === resolve(argvPath);
+  const modulePath = fileURLToPath(importMetaUrl);
+
+  if (isWindowsPath(argvPath)) {
+    return normalizeWindowsPath(modulePath) === normalizeWindowsPath(argvPath);
+  }
+
+  return resolve(modulePath) === resolve(argvPath);
+}
+
+function isWindowsPath(path: string): boolean {
+  return /^[A-Za-z]:[\\/]/.test(path);
+}
+
+function normalizeWindowsPath(path: string): string {
+  return win32.resolve(path.replace(/^\/([A-Za-z]:[\\/])/, "$1"));
 }
 
 if (isEntrypointModule(import.meta.url, process.argv[1])) {
