@@ -103,6 +103,7 @@ Legend: each item lists **Objective → Build → Acceptance (testable) → DoD*
 - Real conditions measurably *flavor* a journey (a test shows a signal present in the journey) without being required for any outcome category.
 - No weather call is made per-user; cache hit on repeated region+window.
 - Precise coords never reach the weather cache key or storage (coarse region only).
+- Resolves the M2 `// TODO(M6)`: a Zod (or equivalent) validation at the write boundary rejects coordinate-shaped fields inside `WorldSnapshot.canonical` and `MemoryEvent.payload`; a test asserts a coordinate-bearing payload is rejected (mutation-style: it must fail if the validation is removed).
 **DoD:** fairness + caching + privacy tests pass; CI green.
 
 ---
