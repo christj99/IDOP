@@ -1,3 +1,4 @@
+import React from "react";
 import type { Cargo, Core, InfluenceType, Intent, Shell } from "@idop/engine";
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 

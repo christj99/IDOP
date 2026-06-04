@@ -16,7 +16,7 @@ import {
 
 type FlowStep = "home" | "build" | "launch" | "away" | "return";
 
-const defaultApiBaseUrl = "http://localhost:3000";
+const defaultApiBaseUrl = process.env.EXPO_PUBLIC_IDOP_API_BASE_URL ?? "http://localhost:3000";
 const defaultLaunchWindowRead = "deterministic baseline - good drifting";
 const defaultPreciseLocation = { latitude: 0, longitude: 0 };
 

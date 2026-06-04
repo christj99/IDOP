@@ -1,4 +1,4 @@
-import type { ReactElement, ReactNode } from "react";
+import React, { type ReactElement, type ReactNode } from "react";
 import { describe, expect, it, vi } from "vitest";
 
 vi.mock("react-native", () => ({
