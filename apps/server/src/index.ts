@@ -1,4 +1,4 @@
-import Fastify from "fastify";
+import Fastify, { type FastifyServerOptions } from "fastify";
 
 import {
   createDefaultJourneyApiDependencies,
@@ -8,7 +8,7 @@ import {
 
 export interface BuildServerOptions {
   journeyApi?: JourneyApiDependencies;
-  logger?: boolean;
+  logger?: FastifyServerOptions["logger"];
 }
 
 export function buildServer(options: BuildServerOptions = {}) {

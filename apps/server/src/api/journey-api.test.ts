@@ -54,7 +54,7 @@ interface JourneyReadResponse {
   return_estimate_utc: string;
 }
 
-function createHarness() {
+function createHarness(options: Parameters<typeof buildServer>[0] = {}) {
   const repository = createInMemoryJourneyRepository();
   const lock = createInMemoryJourneyLock();
   const ids = new Map<string, number>();
@@ -76,6 +76,7 @@ function createHarness() {
         getSecret: (version) => (version === "v1" ? serverSecret : undefined),
       },
     },
+    ...options,
   });
 
   return {
@@ -171,6 +172,28 @@ describe("M3 Journey API", () => {
     );
     expect(responseJson).not.toMatch(
       /47\.620548|-122\.349174|latitude|longitude|lat|lng|precise_location|journeySeed|m3-test-secret/,
+    );
+  });
+
+  it("does not write precise launch coordinates into request logs", async () => {
+    const logLines: string[] = [];
+    const { server } = createHarness({
+      logger: {
+        level: "info",
+        stream: {
+          write: (line: string) => {
+            logLines.push(line);
+          },
+        },
+      },
+    });
+    servers.push(server);
+    const capsule = await createCapsule(server);
+
+    await launchJourney(server, capsule.id);
+
+    expect(logLines.join("\n")).not.toMatch(
+      /47\.620548|-122\.349174|latitude|longitude|lat|lng|precise_location/,
     );
   });
 
