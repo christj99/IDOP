@@ -1,3 +1,6 @@
+import { resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+
 import Fastify, { type FastifyServerOptions } from "fastify";
 
 import {
@@ -26,7 +29,15 @@ export function buildServer(options: BuildServerOptions = {}) {
   return server;
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+export function isEntrypointModule(importMetaUrl: string, argvPath: string | undefined): boolean {
+  if (argvPath === undefined) {
+    return false;
+  }
+
+  return resolve(fileURLToPath(importMetaUrl)) === resolve(argvPath);
+}
+
+if (isEntrypointModule(import.meta.url, process.argv[1])) {
   const server = buildServer();
   const port = Number(process.env.PORT ?? 3000);
 
