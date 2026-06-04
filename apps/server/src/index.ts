@@ -1,14 +1,27 @@
-import Fastify from "fastify";
+import Fastify, { type FastifyServerOptions } from "fastify";
 
-export function buildServer() {
+import {
+  createDefaultJourneyApiDependencies,
+  registerJourneyApi,
+  type JourneyApiDependencies,
+} from "./api/journey-api.js";
+
+export interface BuildServerOptions {
+  journeyApi?: JourneyApiDependencies;
+  logger?: FastifyServerOptions["logger"];
+}
+
+export function buildServer(options: BuildServerOptions = {}) {
   const server = Fastify({
-    logger: true,
+    logger: options.logger ?? true,
   });
 
   server.get("/health", async () => ({
     ok: true,
     service: "@idop/server",
   }));
+
+  registerJourneyApi(server, options.journeyApi ?? createDefaultJourneyApiDependencies());
 
   return server;
 }

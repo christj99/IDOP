@@ -70,6 +70,8 @@ Legend: each item lists **Objective → Build → Acceptance (testable) → DoD*
 - API outcomes match the engine's pure-function output for the same inputs (server adds no nondeterminism).
 **DoD:** endpoint integration tests pass (incl. the privacy + idempotency tests); CI green.
 
+**Deferred / known assumption:** Per-journey completion lock is in-memory (single-server only). Before running >1 server instance, replace with the Redis per-journey lock (Tech Spec §4) so concurrent commits across instances stay once-only. The lock seam exists for this swap.
+
 ---
 
 ## M4 — Client core screens (build → launch → journey → return)  · human-check
