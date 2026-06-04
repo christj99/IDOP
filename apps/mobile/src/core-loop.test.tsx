@@ -95,6 +95,24 @@ describe("M4 client core screens", () => {
       hasTestId(
         renderTree(
           <HomeHearthScreen
+            state="active_journey"
+            tendState="available"
+            launchWindowRead="clear, calm - good drifting"
+            journey={{
+              capsuleName: "Mica",
+              returnMomentLabel: "back by golden hour",
+              statusLabel: "travelling",
+            }}
+          />,
+        ),
+        "home-check-journey-button",
+      ),
+    ).toBe(true);
+
+    expect(
+      hasTestId(
+        renderTree(
+          <HomeHearthScreen
             state="empty"
             tendState="available"
             launchWindowRead="clear, calm - good drifting"
@@ -215,6 +233,8 @@ describe("M4 client core screens", () => {
       expect(hasTestId(tree, `journey-state-${state.replaceAll("_", "-")}`)).toBe(true);
       expect(hasTestId(tree, "journey-return-moment")).toBe(true);
       expect(hasTestId(tree, "journey-dispatch-feed")).toBe(true);
+      expect(hasTestId(tree, "journey-back-home-button")).toBe(true);
+      expect(hasTestId(tree, "journey-refresh-button")).toBe(true);
     }
   });
 

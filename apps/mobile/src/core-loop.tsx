@@ -39,6 +39,7 @@ export interface HomeHearthScreenProps {
   launchWindowRead: string;
   journey?: ActiveJourneySummary;
   onBuildPress?: () => void;
+  onCheckJourneyPress?: () => void;
   onOpenReturnPress?: () => void;
   onTendPress?: () => void;
 }
@@ -70,8 +71,10 @@ export interface JourneyAwayScreenProps {
   dispatches: string[];
   availableInfluenceActions: InfluenceType[];
   returnMomentLabel: string;
+  onBackHomePress?: () => void;
   onInfluencePress?: (type: InfluenceType) => void;
   onOpenReturnPress?: () => void;
+  onRefreshPress?: () => void;
 }
 
 export interface ReturnScreenProps {
@@ -95,6 +98,7 @@ export function HomeHearthScreen({
   launchWindowRead,
   journey,
   onBuildPress,
+  onCheckJourneyPress,
   onOpenReturnPress,
   onTendPress,
 }: HomeHearthScreenProps) {
@@ -122,6 +126,11 @@ export function HomeHearthScreen({
           <Text style={styles.panelTitle}>{journey.capsuleName} is away.</Text>
           <Text style={styles.bodyText}>{journey.statusLabel}</Text>
           <Text style={styles.momentText}>{journey.returnMomentLabel}</Text>
+          <ActionButton
+            label="Check journey"
+            onPress={onCheckJourneyPress}
+            testID="home-check-journey-button"
+          />
         </View>
       ) : null}
 
@@ -274,8 +283,10 @@ export function JourneyAwayScreen({
   dispatches,
   availableInfluenceActions,
   returnMomentLabel,
+  onBackHomePress,
   onInfluencePress,
   onOpenReturnPress,
+  onRefreshPress,
 }: JourneyAwayScreenProps) {
   return (
     <Screen testID="journey-screen">
@@ -299,6 +310,19 @@ export function JourneyAwayScreen({
             </Text>
           ),
         )}
+      </View>
+
+      <View style={styles.actionRow}>
+        <ActionButton
+          label="Back to Hearth"
+          onPress={onBackHomePress}
+          testID="journey-back-home-button"
+        />
+        <ActionButton
+          label="Check again"
+          onPress={onRefreshPress}
+          testID="journey-refresh-button"
+        />
       </View>
 
       {state === "ready_to_open" ? (

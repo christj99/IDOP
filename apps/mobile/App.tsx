@@ -145,8 +145,10 @@ export default function App() {
           returnMomentLabel={returnMomentLabel}
           routeMood={journeyRead.routeMood}
           state={journeyRead.resolutionStatus}
+          onBackHomePress={() => setStep("home")}
           onInfluencePress={sendInfluence}
           onOpenReturnPress={refreshJourney}
+          onRefreshPress={refreshJourney}
         />
       );
     }
@@ -190,6 +192,7 @@ export default function App() {
         }
         tendState="available"
         onBuildPress={() => setStep("build")}
+        onCheckJourneyPress={() => setStep("away")}
         onOpenReturnPress={() => setStep("return")}
       />
     );
